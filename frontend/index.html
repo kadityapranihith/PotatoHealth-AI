@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PotatoHealth AI - Potato Disease Detection System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <svg class="brand-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM13 17H11V15H13V17ZM13 13H11V7H13V13Z" fill="currentColor"/>
+                    <path d="M12 3C7.03 3 3 7.03 3 12C3 13.92 3.6 15.7 4.62 17.18L17.18 4.62C15.7 3.6 13.92 3 12 3ZM19.38 6.82L6.82 19.38C8.3 20.4 10.08 21 12 21C16.97 21 21 16.97 21 12C21 10.08 20.4 8.3 19.38 6.82Z" fill="currentColor" opacity="0.3"/>
+                    <path d="M12 6C8.69 6 6 8.69 6 12C6 12.87 6.19 13.69 6.53 14.43L14.43 6.53C13.69 6.19 12.87 6 12 6Z" fill="currentColor"/>
+                </svg>
+                <div class="brand-text">
+                    <span class="brand-name">PotatoHealth <span class="highlight">AI</span></span>
+                    <span class="brand-badge">Enterprise Diagnostic Portal</span>
+                </div>
+            </div>
+            <div class="system-status" id="system-status">
+                <span class="status-indicator-dot offline" id="status-dot"></span>
+                <span class="status-text" id="status-text">Connecting to API...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-glow"></div>
+            <h1 class="hero-title">Potato Disease Detection System</h1>
+            <p class="hero-subtitle">Leverage state-of-the-art computer vision to identify crop health issues instantly. Upload a leaf image below to run an automated diagnostic analysis.</p>
+        </section>
+
+        <!-- Dynamic Grid Layout -->
+        <div class="dashboard-grid">
+            
+            <!-- Left Panel: Diagnostics controls -->
+            <div class="grid-card panel-diagnostics">
+                <h2 class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    Scan Diagnostic Panel
+                </h2>
+                
+                <!-- Image Upload Zone -->
+                <div class="upload-zone" id="drop-zone">
+                    <input type="file" id="file-input" accept="image/*" class="file-hidden">
+                    <div class="upload-prompt" id="upload-prompt">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text-main">Drag and drop leaf image here</p>
+                        <p class="upload-text-sub">or click to browse your files</p>
+                        <button type="button" class="btn btn-secondary" id="browse-btn">Select Leaf Image</button>
+                        <span class="file-limits">Supported formats: JPG, JPEG, PNG (max 10MB)</span>
+                    </div>
+
+                    <!-- Image Preview Area -->
+                    <div class="preview-area hidden" id="preview-container">
+                        <img src="" alt="Leaf Preview" id="image-preview" class="preview-image">
+                        <div class="preview-overlay">
+                            <span class="preview-filename" id="preview-filename">leaf_image.jpg</span>
+                            <button type="button" class="btn-remove" id="remove-btn" title="Remove image">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="close-icon"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="button" class="btn btn-primary btn-block btn-predict" id="predict-btn" disabled>
+                    <span>Analyze Leaf Health</span>
+                    <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+
+                <!-- Loading State overlay -->
+                <div class="loading-state hidden" id="loading-state">
+                    <div class="loader-spinner">
+                        <svg viewBox="0 0 50 50" class="spinner-svg">
+                            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="4"></circle>
+                        </svg>
+                    </div>
+                    <p class="loading-message">Analyzing leaf image...</p>
+                    <p class="loading-sub">Running deep learning classification model...</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Results & Stats -->
+            <div class="grid-card panel-results">
+                <h2 class="card-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line><line x1="9" y1="17" x2="11" y2="17"></line></svg>
+                    Diagnostic Report
+                </h2>
+
+                <!-- Placeholder state when no results -->
+                <div class="results-placeholder" id="results-placeholder">
+                    <div class="placeholder-icon-wrapper">
+                        <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+                            <path d="M12 16v-4"></path>
+                            <path d="M12 8h.01"></path>
+                        </svg>
+                    </div>
+                    <p class="placeholder-title">Awaiting Diagnostic Data</p>
+                    <p class="placeholder-desc">Upload a potato leaf image and click "Analyze Leaf Health" to generate a detailed AI classification report.</p>
+                </div>
+
+                <!-- Result Card -->
+                <div class="results-card hidden" id="results-card">
+                    <div class="results-header">
+                        <div class="results-title-group">
+                            <span class="report-meta">PREDICTION RESULT</span>
+                            <h3 class="disease-name" id="disease-name">Potato___Early_blight</h3>
+                        </div>
+                        <span class="status-badge" id="disease-badge">Early Blight</span>
+                    </div>
+
+                    <!-- Confidence Progress Bar -->
+                    <div class="confidence-container">
+                        <div class="confidence-header">
+                            <span class="confidence-label">AI Confidence Score</span>
+                            <span class="confidence-value" id="confidence-percentage">98.5%</span>
+                        </div>
+                        <div class="confidence-bar-bg">
+                            <div class="confidence-bar-fill" id="confidence-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Details sections -->
+                    <div class="report-section">
+                        <h4 class="section-subtitle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="meta-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            Pathology Description
+                        </h4>
+                        <p class="report-text" id="disease-description">Fungal disease causing dark brown to black target-like spots on older leaves, which can spread to stalks and tubers, causing yields to drop.</p>
+                    </div>
+
+                    <div class="report-section treatment-box">
+                        <h4 class="section-subtitle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="meta-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            Recommended Treatment Action
+                        </h4>
+                        <p class="report-text" id="disease-treatment">Apply organic or chemical fungicide promptly. Remove and burn heavily infected foliage to prevent spore spread. Implement crop rotation for subsequent cycles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Metrics Section -->
+        <section class="dashboard-section">
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+                Local Diagnostic Dashboard
+            </h2>
+            <div class="kpi-grid">
+                <!-- KPI 1 -->
+                <div class="kpi-card">
+                    <div class="kpi-content">
+                        <span class="kpi-label">Total Predictions</span>
+                        <h3 class="kpi-value" id="kpi-total">0</h3>
+                    </div>
+                    <div class="kpi-icon-bg total">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    </div>
+                </div>
+                <!-- KPI 2 -->
+                <div class="kpi-card">
+                    <div class="kpi-content">
+                        <span class="kpi-label">Healthy Leaves</span>
+                        <h3 class="kpi-value" id="kpi-healthy">0</h3>
+                    </div>
+                    <div class="kpi-icon-bg healthy">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    </div>
+                </div>
+                <!-- KPI 3 -->
+                <div class="kpi-card">
+                    <div class="kpi-content">
+                        <span class="kpi-label">Early Blight Cases</span>
+                        <h3 class="kpi-value" id="kpi-early">0</h3>
+                    </div>
+                    <div class="kpi-icon-bg early">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </div>
+                </div>
+                <!-- KPI 4 -->
+                <div class="kpi-card">
+                    <div class="kpi-content">
+                        <span class="kpi-label">Late Blight Cases</span>
+                        <h3 class="kpi-value" id="kpi-late">0</h3>
+                    </div>
+                    <div class="kpi-icon-bg late">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prediction History Table Section -->
+        <section class="history-section-wrapper">
+            <div class="history-header">
+                <h2 class="section-title no-margin">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="section-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Diagnostic History Log
+                </h2>
+                
+                <div class="history-controls">
+                    <div class="search-box">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <input type="text" id="history-search" placeholder="Search diagnostics...">
+                    </div>
+                    <button type="button" class="btn btn-danger" id="clear-history-btn">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        Clear History
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Wrapper -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="history-table" id="history-table">
+                        <thead>
+                            <tr>
+                                <th>Image Name</th>
+                                <th>Diagnostic Result</th>
+                                <th>Confidence</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <!-- Rows will be injected here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Empty table state -->
+                <div class="table-empty hidden" id="table-empty">
+                    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <p>No diagnostics recorded yet</p>
+                    <p class="sub">Run a disease scan above to log data to history</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>&copy; 2026 PotatoHealth AI Crop Care. Built for Agricultural Health Optimization.</p>
+    </footer>
+
+    <!-- App Script -->
+    <script src="js/app.js"></script>
+</body>
+</html>
