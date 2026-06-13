@@ -4,7 +4,7 @@
  * dashboard metrics, and diagnostic logs.
  */
 
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = 'https://potatohealth-ai.onrender.com';
 
 // App State
 let selectedFile = null;
