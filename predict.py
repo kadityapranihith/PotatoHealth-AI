@@ -10,13 +10,7 @@ print("Model Exists:", os.path.exists("potato_model.keras"))
 if os.path.exists("potato_model.keras"):
     print("Model Size:", os.path.getsize("potato_model.keras"))
 
-model = tf.keras.models.load_import os
-
-print("Current Directory:", os.getcwd())
-print("Model Exists:", os.path.exists("potato_model.keras"))
-
-if os.path.exists("potato_model.keras"):
-    print("Model Size:", os.path.getsize("potato_model.keras"))model("potato_model.keras")
+model = tf.keras.models.load_model("potato_model.keras")
 classes=["Potato___Early_blight", "Potato___Late_blight", "Potato___healthy"]
 DISEASE_INFO = {
     "Potato___Early_blight": {
